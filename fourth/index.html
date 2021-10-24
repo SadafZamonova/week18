@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My notes</title>
+    <link rel="stylesheet" href="assets/normalize.css" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/notes.css" />
+</head>
+
+<body>
+    <h1>My notes</h1>
+
+    <form class="comment-form">
+        <h2>Jot down anything!</h2>
+        <input type="text" placeholder="Title" id="title" name="title" minlength="8">
+        <textarea class="text" placeholder="What's up?"></textarea>
+        <button type="button">Save</button>
+    </form>
+
+    <div class="error"></div>
+
+    <div class="notes">
+    </div>
+
+    <script src="js/notes.js"></script>
+
+</body>
+
+</html>
+и js
+let notes = [];
+let titles = [];
+let dates = [];
+
+//валидация
+function validate() {
+    let errorMessage = '';
+    document.querySelector('.error').innerText = '';
+    let note = document.querySelector('.text').value;
+
+    if (!note.length || note.length > 300) {
+        errorMessage = 'Обязательно введите сообщение. Оно не должно быть длиннее 300 символов!'
+        document.querySelector('.error').innerText = errorMessage;
+        return;
+    }
+
+    return note;
+}
+
+// добавляю комментарий
+function addNote() {
+    let note = validate();
+    let title = document.querySelector('#title').value;
+    let dateFull = new Date();
+
+    // оформляем дату
+    let year = dateFull.getFullYear();
+
+    let month = dateFull.getMonth() + 1;
+    if (month < 10) month = `0${month}`;
+
+    let day = dateFull.getDate();
+    if (day < 10) day = `0${day}`;
+
+    let date = `${day}-${month}-${year}`
+
+    notes.push(note);
+    titles.push(title);
+    dates.push(date);
+
+    // сохраняем в локальном хранилище текст, заголовок и дату
+    localStorage.setItem('note', notes.join('+'));
+    localStorage.setItem('title', titles.join('+'));
+    localStorage.setItem('date', dates.join('+'));
+
+    fillNoteTags(note, title, date);
+
+    // очиащем поля
+    document.querySelector('.text').value = '';
+    document.querySelector('#title').value = '';
+}
+
+// создаю и наполняю теги для комментариев
+function fillNoteTags(note, title, date) {
+    let resField = document.querySelector('.notes');
+
+    let dateDiv = document.createElement('div');
+    dateDiv.classList.add('note-date');
+    resField.appendChild(dateDiv);
+
+    let titleDiv = document.createElement('div');
+    titleDiv.classList.add('note-title');
+    resField.appendChild(titleDiv);
+
+    let noteDiv = document.createElement('div');
+    noteDiv.classList.add('note-text');
+    resField.appendChild(noteDiv);
+
+    titleDiv.innerText = title;
+    noteDiv.innerText = note;
+    dateDiv.innerText = date;
+}
+
+// отображаю комментарии их хранилища
+function displayNotes() {
+    if (!localStorage.length) return;
+
+    titles = localStorage.getItem('title').split('+');
+    notes = localStorage.getItem('note').split('+');
+    dates = localStorage.getItem('date').split('+');
+
+    let i = 0;
+
+    for (titles[i]; i <= titles.length - 1; i++) {
+        for (notes[i]; i <= notes.length - 1; i++) {
+            for (dates[i]; i <= dates.length - 1; i++) {
+                fillNoteTags(notes[i], titles[i], dates[i]);
+            }
+        }
+    }
+}
+
+displayNotes();
+
+document.querySelector('button').addEventListener('click', addNote);
