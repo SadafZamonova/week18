@@ -1,8 +1,10 @@
+let errors = [];
+
 let button = document.querySelector("#button");
 button.addEventListener(`click`, function () {
 
 
-        errors = [];
+  
         let inputs = document.querySelectorAll("input");
         for (let input of inputs) {
             checkValidity(input);
@@ -14,12 +16,14 @@ button.addEventListener(`click`, function () {
 )
 
 
-let errors = [];
+
 
 function checkValidity(input) {
     let validity = input.validity;
+
+   
     if (validity.valueMissing) {
-        errors.push("Поле" + input.placeholder + "не заполнено");
+        errors.push("Поле " + input.placeholder + " не заполнено");
     }
 
 
@@ -36,6 +40,8 @@ function checkValidity(input) {
         let min = getAttributeValue(input, "min");
         errors.push("Минимальное значение не может быть меньше чем" + min);
     }
+
+   
 }
 
 
