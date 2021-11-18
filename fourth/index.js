@@ -18,12 +18,9 @@ function validate() {
 function addNote() {
     let note = validate();
     let text = document.querySelector('#name').value;
-
-    // сохраняем в локальном хранилище текст и заголовок 
-    localStorage.setItem('note', note);
-    localStorage.setItem('text', text);
-
+   
     fillNoteTags(note, text);
+
 
     // очищаем поле
     document.querySelector('.text').value = '';
@@ -44,18 +41,22 @@ function fillNoteTags(note, text) {
 
     textDiv.innerText = text;
     noteDiv.innerText = note;
+
+
+    // сохраняем в локальном хранилище текст и заголовок 
+    localStorage.setItem('notes', resField.innerHTML);
+
  
 }
 
 // отображаю комментарии из хранилища
 function displayNotes() {
   
-
-   let texts = localStorage.getItem('text');
    let notes = localStorage.getItem('note');
-   document.querySelector(".notes").value = texts
-   document.querySelector(".notes").value = notes
+  
+   document.querySelector(".notes").innerHTML += notes
 }
+
 
 displayNotes();
 
